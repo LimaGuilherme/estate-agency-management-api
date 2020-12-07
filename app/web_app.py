@@ -11,7 +11,7 @@ web_app = None
 api = None
 
 
-def get_web_app():
+def get_web_app() -> Flask:
     global web_app
 
     if not web_app:
@@ -21,7 +21,7 @@ def get_web_app():
     return web_app
 
 
-def get_api():
+def get_api() -> Api:
     global api
 
     if not api:
