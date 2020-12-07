@@ -1,0 +1,36 @@
+version: '3.3'
+services:
+  mysql:
+    image: mysql:5.7
+    restart: always
+    environment:
+      MYSQL_DATABASE: 'estage-agency'
+      MYSQL_USER: 'user'
+      MYSQL_PASSWORD: 'password'
+      MYSQL_ROOT_PASSWORD: 'password'
+    ports:
+      - 3306:3306
+    volumes:
+      - ./data:/data/db
+
+  estate-agency-api:
+      build:
+        context: .
+        dockerfile: Dockerfile
+      container_name: estate-agency-api
+      volumes:
+      - ./:/code
+      restart: unless-stopped
+      environment:
+        APP_SETTINGS: ${APP_SETTINGS}
+        DATABASE_URL: ${DATABASE_URL}
+      ports:
+        - 6668:6668
+      networks:
+        - estate-agency-network
+      depends_on:
+        - mysql
+
+networks:
+  estate-agency-network:
+    driver: bridge
