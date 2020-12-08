@@ -31,7 +31,7 @@ class MySQLEstateAgencyRepository(AbstractEstateAgencyRepository):
         self._session.commit()
 
     def get(self, estate_agency_id: int) -> EstateAgency:
-        estate_agency_row = self._query.filter_by(id=estate_agency_id).one_or_none()
+        estate_agency_row = self._query.filter_by(id=estate_agency_id, delted=False).one_or_none()
 
         if not estate_agency_row:
             raise exceptions.EstateAgencyNotFound
@@ -99,7 +99,7 @@ class MySQLEstateRepository(AbstractEstateRepository):
             raise exceptions.UnexpectedDBError(ex.orig.args[1])
 
     def get(self, estate_id: int) -> Estate:
-        estate_row = self._query.filter_by(id=estate_id).one_or_none()
+        estate_row = self._query.filter_by(id=estate_id, deleted=False).one_or_none()
 
         if not estate_row:
             raise exceptions.EstateNotFound
@@ -119,7 +119,7 @@ class MySQLEstateRepository(AbstractEstateRepository):
         self._session.commit()
 
     def delete(self, estate_id: int) -> None:
-        estate_row = self._query.filter_by(id=estate_id).one_or_none()
+        estate_row = self._query.filter_by(id=estate_id, deleted=False).one_or_none()
 
         if not estate_row:
             raise exceptions.EstateNotFound
