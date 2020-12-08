@@ -6,14 +6,16 @@ from flask_migrate import Migrate, MigrateCommand
 
 import sys
 
-from app import initialize
-from app.estate_management import models
+from src import initialize
+from src.db_connections import get_sql_alchemy_instance
 
 manager = Manager(initialize.web_app)
 
+sql_alchemy = get_sql_alchemy_instance()
+
 
 def register_migrate(manager):
-    migrate = Migrate(initialize.web_app, models.db)
+    migrate = Migrate(initialize.web_app, sql_alchemy)
     manager.add_command('db', MigrateCommand)
     return migrate
 

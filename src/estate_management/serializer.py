@@ -1,4 +1,4 @@
-from app.estate_management.domain import EstateAgency, Estate, AbstractEstateAgencySerializer
+from src.estate_management.entities import EstateAgency, Estate, AbstractEstateAgencySerializer
 
 
 class EstateAgencyDictSerializer(AbstractEstateAgencySerializer):
