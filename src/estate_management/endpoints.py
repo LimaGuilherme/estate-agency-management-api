@@ -13,6 +13,7 @@ class EstateResource(ResourceBase):
     estate_dict_serializer = EstateDictSerializer()
 
     def __init__(self, estate_service):
+        super(EstateResource, self).__init__()
         self.estate_service = estate_service
 
     def get(self, estate_id: int = None):
@@ -74,6 +75,7 @@ class EstateAgencyResource(ResourceBase):
     estate_agency_dict_serializer = EstateAgencyDictSerializer()
 
     def __init__(self, estate_agency_service):
+        super(EstateAgencyResource, self).__init__()
         self.estate_agency_service = estate_agency_service
 
     def get(self, estate_agency_id=None):
@@ -89,7 +91,7 @@ class EstateAgencyResource(ResourceBase):
 
         estate_agencies = self.estate_agency_service.list()
         response = [self.estate_agency_dict_serializer.serialize(estate_agency) for estate_agency in estate_agencies]
-        return self.response({'result': response})
+        return self._serialize_out(response), 200
 
     def delete(self, estate_agency_id: int):
         try:

@@ -1,4 +1,6 @@
-from importlib.resources import Resource
+from typing import Union
+
+from flask_restful import Resource
 
 from src.base.serializer import CaseStyleConverter
 
@@ -9,8 +11,11 @@ class ResourceBase(Resource):
         super(ResourceBase, self).__init__(*args, **kwargs)
         self._converter = CaseStyleConverter()
 
-    def _serialize_in(self, data_dict):
+    def _serialize_in(self, data_dict: dict) -> dict:
         return self._converter.camel_to_snake(data_dict)
+
+    def _serialize_out(self, data: Union[dict, list]) -> dict:
+        return self._converter.snake_to_camel(data)
 
     def return_ok(self, **extra):
         result = {'result': 'OK'}
@@ -33,5 +38,3 @@ class ResourceBase(Resource):
     def return_bad_parameters(self, exception=None):
         return {'result': 'error', 'error': 'Bad Parameters', 'exception': str(exception)}, 500
 
-    def response(self, data_dict):
-        return self._converter.camel_to_snake(data_dict)
