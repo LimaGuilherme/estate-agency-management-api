@@ -25,7 +25,7 @@ services:
         APP_SETTINGS: ${APP_SETTINGS}
         DATABASE_URL: ${DATABASE_URL}
       ports:
-        - 6668:6668
+        - 9996:9996
       networks:
         - estate-agency-network
       depends_on:
