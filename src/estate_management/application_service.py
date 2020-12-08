@@ -37,7 +37,7 @@ class EstateAgencyService(object):
     def __init__(self, estate_agency_repository: MySQLEstateAgencyRepository) -> None:
         self.__estate_agency_repository = estate_agency_repository
 
-    def create(self, estate_agency_dict:  dict) -> EstateAgency:
+    def create(self, estate_agency_dict: dict) -> EstateAgency:
         estate_agency = EstateAgency(**estate_agency_dict)
         self.__estate_agency_repository.add(estate_agency)
         return estate_agency
