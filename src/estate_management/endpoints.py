@@ -1,52 +1,12 @@
-from flask_restful import Resource
+from flask import request
 
+from src.base.endpoints import ResourceBase
 from src.estate_management import exceptions
 from src.estate_management.application_service import EstateAgencyService, EstateService
 from src.estate_management.serializer import EstateDictSerializer, EstateAgencyDictSerializer
 from src.web_app import get_api
 
 api = get_api()
-
-
-class ResourceBase(Resource):
-
-    @property
-    def payload(self):
-        payload = {}
-        try:
-            if request.json:
-                payload.update(self.transform_key(request.json, self.camel_to_snake))
-        except Exception as Ex:
-            pass
-        if request.form:
-            payload.update(self.transform_key(request.form, self.camel_to_snake))
-        if request.args:
-            payload.update(self.transform_key(request.args, self.camel_to_snake))
-        return payload
-
-    def response(self, data_dict):
-        return self.transform_key(data_dict, self.snake_to_camel)
-
-    def return_ok(self, **extra):
-        result = {'result': 'OK'}
-        if extra is not None:
-            result.update(extra)
-        return result
-
-    def return_deleted(self):
-        return {'result': 'OK'}, 204
-
-    def return_not_found(self, exception=None):
-        return {'result': 'error', 'error': 'Not Found', 'exception': str(exception)}, 404
-
-    def return_unexpected_error(self, exception=None):
-        return {'result': 'error', 'error': 'General Error', 'exception': str(exception)}, 500
-
-    def return_bad_request(self, exception=None):
-        return {'result': 'error', 'error': 'Bad Request', 'exception': str(exception)}, 400
-
-    def return_bad_parameters(self, exception=None):
-        return {'result': 'error', 'error': 'Bad Parameters', 'exception': str(exception)}, 500
 
 
 class EstateResource(ResourceBase):
@@ -65,11 +25,12 @@ class EstateResource(ResourceBase):
                 return self.return_not_found('Estate with ID: {} was not found.'.format(estate_id))
             except exceptions.UnexpectedError as ex:
                 return self.return_unexpected_error(ex)
+
         estates = self.estate_service.list()
         response = [self.estate_dict_serializer.serialize(estate) for estate in estates]
         return self.response({'result': response})
 
-    def delete(self, estate_id):
+    def delete(self, estate_id: int):
         try:
             self.estate_service.delete(estate_id)
             return self.return_deleted()
@@ -80,7 +41,8 @@ class EstateResource(ResourceBase):
 
     def post(self):
         try:
-            estate = self.estate_service.create(self.payload)
+            data_to_create_estate = self._serialize_in(request.json)
+            estate = self.estate_service.create(data_to_create_estate)
             estate_json = self.estate_dict_serializer.serialize(estate)
             return self.response({'result': estate_json})
         except exceptions.EstateAgencyNotFound:
@@ -94,9 +56,10 @@ class EstateResource(ResourceBase):
         except exceptions.UnexpectedError as ex:
             return self.return_unexpected_error(ex)
 
-    def put(self, estate_id):
+    def put(self, estate_id: int):
         try:
-            estate = self.estate_service.update(estate_id, self.payload)
+            data_to_update_estate = self._serialize_in(request.json)
+            estate = self.estate_service.update(estate_id, data_to_update_estate)
             estate_json = self.estate_dict_serializer.serialize(estate)
             return self.response({'result': estate_json})
         except exceptions.EstateNotFound:
@@ -139,15 +102,17 @@ class EstateAgencyResource(ResourceBase):
 
     def post(self):
         try:
-            estate = self.estate_agency_service.create(self.payload)
-            estate_json = self.estate_agency_dict_serializer.serialize(estate)
-            return self.response({'result': estate_json})
+            data_to_create_estate_agency = self._serialize_in(request.json)
+            estate = self.estate_agency_service.create(data_to_create_estate_agency)
+            estate_dict = self.estate_agency_dict_serializer.serialize(estate)
+            return self.response({'result': estate_dict})
         except exceptions.UnexpectedError as ex:
             return self.return_unexpected_error(ex)
 
     def put(self, estate_agency_id: int):
         try:
-            estate_agency = self.estate_agency_service.update(estate_agency_id, self.payload)
+            data_to_update_estate_agency = self._serialize_in(request.json)
+            estate_agency = self.estate_agency_service.update(estate_agency_id, data_to_update_estate_agency)
             estate_json = self.estate_agency_dict_serializer.serialize(estate_agency)
             return self.response({'result': estate_json})
         except exceptions.EstateAgencyNotFound:
