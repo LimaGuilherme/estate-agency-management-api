@@ -1,6 +1,9 @@
 from src import configurations, web_app as web_app_module
 from src.db_connections import get_sql_alchemy_instance
+
+from src.estate_management.application_service import EstateService, EstateAgencyService
 from src.estate_management.repositories import MySQLEstateRepository, MySQLEstateAgencyRepository
+from src.estate_management import endpoints as estate_management_endpoints
 
 config = configurations.get_config()
 web_app = web_app_module.get_web_app()

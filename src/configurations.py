@@ -2,7 +2,7 @@ import os
 
 from importlib import import_module
 
-from src import exceptions
+from src.estate_management import exceptions
 
 
 class Config(object):

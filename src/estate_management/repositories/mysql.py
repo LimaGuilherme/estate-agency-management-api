@@ -3,7 +3,7 @@ from sqlalchemy import exc
 
 from src.estate_management.repositories.models import EstateAgencyRow, EstateRow
 from src.estate_management.entities import EstateAgency, Estate, EstateAgencyValueObject, AbstractEstateAgencyRepository, AbstractEstateRepository
-from src import exceptions
+from src.estate_management import exceptions
 
 
 class MySQLEstateAgencyRepository(AbstractEstateAgencyRepository):
