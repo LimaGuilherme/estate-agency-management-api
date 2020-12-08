@@ -1,8 +1,6 @@
 import re
 from typing import Callable
 
-from src.estate_management.entities import EstateAgency, Estate, AbstractEstateAgencySerializer
-
 
 class CaseStyleConverter(object):
 

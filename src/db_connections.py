@@ -17,4 +17,3 @@ def get_sql_alchemy_instance() -> SQLAlchemy:
         sql_alchemy_instance = SQLAlchemy(web_app)
 
     return sql_alchemy_instance
-

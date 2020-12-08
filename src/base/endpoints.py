@@ -7,7 +7,7 @@ from src.base.serializer import CaseStyleConverter
 
 class ResourceBase(Resource):
 
-    def __init__(self,  *args, **kwargs):
+    def __init__(self, *args, **kwargs):
         super(ResourceBase, self).__init__(*args, **kwargs)
         self._converter = CaseStyleConverter()
 
@@ -37,4 +37,3 @@ class ResourceBase(Resource):
 
     def return_bad_parameters(self, exception=None):
         return {'result': 'error', 'error': 'Bad Parameters', 'exception': str(exception)}, 500
-
