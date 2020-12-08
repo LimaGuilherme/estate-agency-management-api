@@ -15,7 +15,7 @@ logger = logging.getLogger('alembic.env')
 
 # add your model's MetaData object here
 # for 'autogenerate' support
-# from myapp import mymodel
+from src.estate_management.repositories.models import *
 # target_metadata = mymodel.Base.metadata
 from flask import current_app
 config.set_main_option('sqlalchemy.url',
@@ -60,6 +60,8 @@ def run_migrations_online():
     # reference: http://alembic.readthedocs.org/en/latest/cookbook.html
     def process_revision_directives(context, revision, directives):
         if getattr(config.cmd_opts, 'autogenerate', False):
+            import ipdb
+            ipdb.set_trace()
             script = directives[0]
             if script.upgrade_ops.is_empty():
                 directives[:] = []

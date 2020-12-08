@@ -10,8 +10,7 @@ class Config(object):
     TESTING = False
     DEVELOPMENT = False
     PRODUCTION = False
-    MONGO_HOST = os.environ['MONGO_HOST']
-    MONGO_PORT = int(os.environ['MONGO_PORT'])
+    SQLALCHEMY_DATABASE_URI = os.environ['DATABASE_URL']
 
 
 class DevelopmentConfig(Config):
