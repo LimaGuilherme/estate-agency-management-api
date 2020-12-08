@@ -32,8 +32,10 @@ class MySQLEstateAgencyRepository(AbstractEstateAgencyRepository):
 
     def get(self, estate_agency_id: int) -> EstateAgency:
         estate_agency_row = self._query.filter_by(id=estate_agency_id).one_or_none()
+
         if not estate_agency_row:
             raise exceptions.EstateAgencyNotFound
+
         estate_agency = self.__create_estate_agency(estate_agency_row)
         return estate_agency
 
@@ -46,8 +48,10 @@ class MySQLEstateAgencyRepository(AbstractEstateAgencyRepository):
 
     def delete(self, estate_agency_id: int) -> None:
         estate_agency_row = self._query.filter_by(id=estate_agency_id, deleted=False).one_or_none()
+
         if not estate_agency_row:
             raise exceptions.EstateAgencyNotFound
+
         estate_agency_row.deleted = True
         self._session.commit()
 
@@ -85,6 +89,7 @@ class MySQLEstateRepository(AbstractEstateRepository):
         estate_row.estate_agency_id = estate.estate_agency.id
 
         self.__update_infos(estate, estate_row)
+
         try:
             self._session.add(estate_row)
             self._session.commit()
@@ -95,15 +100,19 @@ class MySQLEstateRepository(AbstractEstateRepository):
 
     def get(self, estate_id: int) -> Estate:
         estate_row = self._query.filter_by(id=estate_id).one_or_none()
+
         if not estate_row:
             raise exceptions.EstateNotFound
+
         estate = self.__create_estate(estate_row)
         return estate
 
     def update(self, estate: Estate) -> None:
         estate_row = EstateRow()
+
         if not estate_row:
             raise exceptions.EstateNotFound
+
         estate_row.id = estate.id
         self.__update_infos(estate, estate_row)
         self._session.merge(estate_row)
@@ -111,8 +120,10 @@ class MySQLEstateRepository(AbstractEstateRepository):
 
     def delete(self, estate_id: int) -> None:
         estate_row = self._query.filter_by(id=estate_id).one_or_none()
+
         if not estate_row:
             raise exceptions.EstateNotFound
+
         estate_row.deleted = True
         self._session.commit()
 
