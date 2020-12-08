@@ -1,5 +1,6 @@
 from src.estate_management.entities import EstateAgency, Estate
 
+
 def serialize_estate_agency_to_json(estate_agency: EstateAgency) -> dict:
     return {
         'id': estate_agency.id,

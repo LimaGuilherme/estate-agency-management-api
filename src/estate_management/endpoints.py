@@ -11,11 +11,11 @@ api = get_api()
 
 class EstateResource(ResourceBase):
 
-    def __init__(self, estate_service):
+    def __init__(self, estate_service: EstateService):
         super(EstateResource, self).__init__()
         self.estate_service = estate_service
 
-    def get(self, estate_id: int = None):
+    def get(self, estate_id: int = None) -> tuple:
         if estate_id:
             try:
                 estate = self.estate_service.find(estate_id)
@@ -30,7 +30,7 @@ class EstateResource(ResourceBase):
         response = [serialize_estate_to_json(estate) for estate in estates]
         return self._serialize_out(response), 200
 
-    def delete(self, estate_id: int):
+    def delete(self, estate_id: int) -> tuple:
         try:
             self.estate_service.delete(estate_id)
             return self.return_deleted()
@@ -39,7 +39,7 @@ class EstateResource(ResourceBase):
         except exceptions.UnexpectedError as ex:
             return self.return_unexpected_error(ex)
 
-    def post(self):
+    def post(self) -> tuple:
         try:
             data_to_create_estate = self._serialize_in(request.json)
             estate = self.estate_service.create(data_to_create_estate)
@@ -72,15 +72,15 @@ class EstateResource(ResourceBase):
 
 class EstateAgencyResource(ResourceBase):
 
-    def __init__(self, estate_agency_service):
+    def __init__(self, estate_agency_service: EstateAgencyService):
         super(EstateAgencyResource, self).__init__()
         self.estate_agency_service = estate_agency_service
 
-    def get(self, estate_agency_id: int =None) -> tuple:
+    def get(self, estate_agency_id: int = None) -> tuple:
         if estate_agency_id:
             try:
                 estate_agency = self.estate_agency_service.find(estate_agency_id)
-                estate_json = self.estate_agency_dict_serializer.serialize(estate_agency)
+                estate_json = serialize_estate_agency_to_json(estate_agency)
                 return self._serialize_out(estate_json), 200
             except exceptions.EstateAgencyNotFound:
                 return self.return_not_found('Estate Agency with ID: {} was not found.'.format(estate_agency_id))
@@ -113,7 +113,7 @@ class EstateAgencyResource(ResourceBase):
         try:
             data_to_update_estate_agency = self._serialize_in(request.json)
             estate_agency = self.estate_agency_service.update(estate_agency_id, data_to_update_estate_agency)
-            estate_json = self.estate_agency_dict_serializer.serialize(estate_agency)
+            estate_json = serialize_estate_agency_to_json(estate_agency)
             return self.response(estate_json), 200
         except exceptions.EstateAgencyNotFound:
             return self.return_not_found('Estate Agency with ID: {} was not found.'.format(estate_agency_id))
