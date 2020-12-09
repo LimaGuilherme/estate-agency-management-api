@@ -17,7 +17,7 @@ Estate Agency
         "name": "My Hunter Imobiliária",
         "address": "Avenida 13",
         "complement": "Executive Tower - 16° Andar",
-        "zip_code": "74180-040",
+        "zipCode": "74180040",
         "number": 960,
         "city": "Goiânia"
     }
@@ -25,16 +25,16 @@ Estate Agency
 Estates
 
     {
-        "estate_agency_id": 1,
-        "city": "Goiânia"
+        "estateAgencyId": 1,
+        "city": "Goiânia",
         "complement": "Esq c/rua C16",
-        "zip_code": "74170-090",
-        "number": "55",
+        "zip_code": 74170090,
+        "number": 55,
         "name": "Casa 200m² proximo ao centro",
         "address": "Rua C88",
         "description": "Casa reformada e nenhum inquilino anterior",
-        "characteristics": {quartos: 2, banheiros: 2, suites: 1},
-        "type": "casa",
+        "characteristics": {"quartos": 2, "banheiros": 2, "suites": 1},
+        "estateType": "casa",
         "purpose": "residencial",
         "status": "ativo"
     }

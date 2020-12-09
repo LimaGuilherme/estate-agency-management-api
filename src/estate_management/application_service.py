@@ -1,5 +1,6 @@
 from typing import List
 
+from src.estate_management import exceptions
 from src.estate_management.entities import EstateAgency, Estate, EstateAgencyValueObject
 from src.estate_management.repositories import MySQLEstateRepository, MySQLEstateAgencyRepository
 
@@ -10,11 +11,14 @@ class EstateService(object):
         self.__estate_repository = estate_repository
 
     def create(self, estate_agency_dict: dict) -> Estate:
-        estate_agency = EstateAgencyValueObject(id=estate_agency_dict.pop('estate_agency_id'))
-        estate_agency_dict['estate_agency'] = estate_agency
-        estate = Estate(**estate_agency_dict)
-        self.__estate_repository.add(estate)
-        return estate
+        try:
+            estate_agency = EstateAgencyValueObject(id=estate_agency_dict.pop('estate_agency_id'))
+            estate_agency_dict['estate_agency'] = estate_agency
+            estate = Estate(**estate_agency_dict)
+            self.__estate_repository.add(estate)
+            return estate
+        except TypeError as ex:
+            raise exceptions.BadParameter(ex)
 
     def update(self, estate_id: int, estate_dict: dict) -> Estate:
         estate = self.__estate_repository.get(estate_id)

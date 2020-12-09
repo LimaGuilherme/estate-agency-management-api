@@ -1,5 +1,7 @@
 class BadParameter(Exception):
-    pass
+
+    def __init__(self, invalid_parameter):
+        self.invalid_parameter = invalid_parameter
 
 
 class NotAuthorized(Exception):

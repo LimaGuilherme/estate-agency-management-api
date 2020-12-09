@@ -21,8 +21,8 @@ class EstateAgencyValueObject:
 class Estate:
 
     def __init__(self, status, characteristics, description, estate_type, purpose, city, name, address,
-                 complement, zip_code, number, estate_agency, id=None):
-        self.__id = id
+                 complement, zip_code, number, estate_agency, estate_id=None):
+        self.__id = estate_id
         self.__characteristics = characteristics
         self.__description = description
         self.__city = city
@@ -50,6 +50,9 @@ class Estate:
         if purpose not in ['residencial', 'escritório']:
             raise exceptions.InvalidPurpose(purpose)
         return purpose
+
+    def associate_id(self, estate_id: int) -> None:
+        self.__id = estate_id
 
     def update_all_infos(self, infos: dict) -> None:
         self.__city = infos['city']
@@ -119,8 +122,8 @@ class Estate:
 
 class EstateAgency:
 
-    def __init__(self, city, name, address, complement, zip_code, number, id=None):
-        self.__id = id
+    def __init__(self, city, name, address, complement, zip_code, number, estate_agency_id=None):
+        self.__id = estate_agency_id
         self.__name = name
         self.__address = address
         self.__complement = complement
@@ -166,13 +169,6 @@ class EstateAgency:
     @property
     def city(self) -> str:
         return self.__city
-
-
-class AbstractEstateAgencySerializer(ABC):
-
-    @abstractmethod
-    def serialize(self, object: object) -> None:
-        raise NotImplementedError
 
 
 class AbstractEstateAgencyRepository(ABC):

@@ -1,5 +1,3 @@
-from typing import Union
-
 from flask_restful import Resource
 
 from src.base.serializer import CaseStyleConverter

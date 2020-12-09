@@ -21,7 +21,7 @@ class EstateAgencyResource(ResourceBase):
                 estate_agency = self.estate_agency_service.find(estate_agency_id)
                 return serialize_estate_agency_to_json(estate_agency), 200
             except exceptions.EstateAgencyNotFound:
-                return self.return_not_found('Estate Agency with ID: {} was not found.'.format(estate_agency_id))
+                return self.return_not_found(f'Estate Agency with ID: {estate_agency_id} was not found.')
             except exceptions.UnexpectedError as ex:
                 return self.return_unexpected_error(ex)
 
@@ -90,12 +90,13 @@ class EstateResource(ResourceBase):
         try:
             data_to_create_estate = self._serialize_in(request.json)
             estate = self.estate_service.create(data_to_create_estate)
-            estate_json = self.estate_dict_serializer.serialize(estate)
-            return self.response({'result': estate_json})
+            return serialize_estate_to_json(estate), 200
+        except exceptions.BadParameter as ex:
+            return {'Invalid Parameter: {}'.format(ex.invalid_parameter)}, 200
         except exceptions.EstateAgencyNotFound:
-            return self.return_not_found('Estate Agency with ID: {} was not found'.format(self.payload['estate_agency_id']))
+            return self.return_not_found('Estate Agency with ID: {} was not found'.format(request.json['estateAgencyId']))
         except exceptions.InvalidPurpose as ex:
-            return self.response({'result': 'Wrong Type of Purpose: {}, try resiencial or comerciall'.format(ex.invalid_purpose)})
+            return self.response({'result': 'Wrong Type of Purpose: {}, Options: [resiencial, comercial]'.format(ex.invalid_purpose)})
         except exceptions.InvalidEstateType as ex:
             return self.response({'result': 'Wrong Type of Purpose: {}, try casa or apartamento'.format(ex.invalid_estate_type)})
         except exceptions.InvalidStatus as ex:
@@ -107,8 +108,7 @@ class EstateResource(ResourceBase):
         try:
             data_to_update_estate = self._serialize_in(request.json)
             estate = self.estate_service.update(estate_id, data_to_update_estate)
-            estate_json = self.estate_dict_serializer.serialize(estate)
-            return self.response(estate_json)
+            return serialize_estate_to_json(estate), 200
         except exceptions.EstateNotFound:
             return self.return_not_found('Estate with ID: {} was not found or already deleted'.format(estate_id))
         except exceptions.EstateAgencyNotFound:

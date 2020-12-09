@@ -86,7 +86,7 @@ class MySQLEstateRepository(AbstractEstateRepository):
         estate_row.purpose = estate.purpose
         estate_row.estate_type = estate.estate_type
 
-    def add(self, estate: Estate) -> None:
+    def add(self, estate: Estate) -> Estate:
         estate_row = EstateRow()
         estate_row.estate_agency_id = estate.estate_agency.id
 
@@ -95,13 +95,16 @@ class MySQLEstateRepository(AbstractEstateRepository):
         try:
             self._session.add(estate_row)
             self._session.commit()
+            estate.associate_id(estate_row.id)
+            return estate
+
         except exc.IntegrityError as ex:
             if ex.orig.args[0] == 1452:
                 raise exceptions.EstateAgencyNotFound
             raise exceptions.UnexpectedDBError(ex.orig.args[1])
 
     def get(self, estate_id: int) -> Estate:
-        estate_row = self._query.filter_by(id=estate_id, deleted=False).one_or_none()
+        estate_row = self._query.filter_by(id=estate_id).one_or_none()
 
         if not estate_row:
             raise exceptions.EstateNotFound
@@ -121,7 +124,7 @@ class MySQLEstateRepository(AbstractEstateRepository):
         self._session.commit()
 
     def delete(self, estate_id: int) -> None:
-        estate_row = self._query.filter_by(id=estate_id, deleted=False).one_or_none()
+        estate_row = self._query.filter_by(id=estate_id).one_or_none()
 
         if not estate_row:
             raise exceptions.EstateNotFound
