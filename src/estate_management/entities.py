@@ -128,6 +128,9 @@ class EstateAgency:
         self.__number = number
         self.__city = city
 
+    def associate_id(self, estate_agency_id:  int) -> None:
+        self.__id = estate_agency_id
+
     def update_all_infos(self, infos):
         self.__name = infos['name']
         self.__address = infos['address']

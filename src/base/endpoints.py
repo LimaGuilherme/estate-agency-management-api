@@ -14,9 +14,6 @@ class ResourceBase(Resource):
     def _serialize_in(self, data_dict: dict) -> dict:
         return self._converter.camel_to_snake(data_dict)
 
-    def _serialize_out(self, data: Union[dict, list]) -> dict:
-        return self._converter.snake_to_camel(data)
-
     def return_ok(self, **extra):
         result = {'result': 'OK'}
         if extra is not None:
@@ -26,14 +23,14 @@ class ResourceBase(Resource):
     def return_deleted(self):
         return {'result': 'OK'}, 204
 
-    def return_not_found(self, exception=None):
-        return {'result': 'error', 'error': 'Not Found', 'exception': str(exception)}, 404
+    def return_not_found(self, message=None):
+        return {'result': 'error', 'error': 'Not Found', 'message': str(message)}, 404
 
-    def return_unexpected_error(self, exception=None):
-        return {'result': 'error', 'error': 'General Error', 'exception': str(exception)}, 500
+    def return_unexpected_error(self, message=None):
+        return {'result': 'error', 'error': 'General Error', 'exception': str(message)}, 500
 
-    def return_bad_request(self, exception=None):
-        return {'result': 'error', 'error': 'Bad Request', 'exception': str(exception)}, 400
+    def return_bad_request(self, message=None):
+        return {'result': 'error', 'error': 'Bad Request', 'exception': str(message)}, 400
 
-    def return_bad_parameters(self, exception=None):
-        return {'result': 'error', 'error': 'Bad Parameters', 'exception': str(exception)}, 500
+    def return_bad_parameters(self, message=None):
+        return {'result': 'error', 'error': 'Bad Parameters', 'exception': str(message)}, 500

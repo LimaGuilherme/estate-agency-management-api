@@ -7,7 +7,7 @@ def serialize_estate_agency_to_json(estate_agency: EstateAgency) -> dict:
         'city': estate_agency.city,
         'address': estate_agency.address,
         'complement': estate_agency.complement,
-        'zip_code': estate_agency.zip_code,
+        'zipCode': estate_agency.zip_code,
         'number': estate_agency.number,
         'name': estate_agency.name,
     }

@@ -24,14 +24,16 @@ class MySQLEstateAgencyRepository(AbstractEstateAgencyRepository):
         estate_agency_row.complement = estate_agency.complement
         estate_agency_row.address = estate_agency.address
 
-    def add(self, estate_agency: EstateAgency) -> None:
+    def add(self, estate_agency: EstateAgency) -> EstateAgency:
         estate_agency_row = EstateAgencyRow()
         self.__update_infos(estate_agency, estate_agency_row)
         self._session.add(estate_agency_row)
         self._session.commit()
+        estate_agency.associate_id(estate_agency_row.id)
+        return estate_agency
 
     def get(self, estate_agency_id: int) -> EstateAgency:
-        estate_agency_row = self._query.filter_by(id=estate_agency_id, delted=False).one_or_none()
+        estate_agency_row = self._query.filter_by(id=estate_agency_id, deleted=False).one_or_none()
 
         if not estate_agency_row:
             raise exceptions.EstateAgencyNotFound

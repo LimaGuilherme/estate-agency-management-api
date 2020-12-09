@@ -39,7 +39,7 @@ class EstateAgencyService(object):
 
     def create(self, estate_agency_dict: dict) -> EstateAgency:
         estate_agency = EstateAgency(**estate_agency_dict)
-        self.__estate_agency_repository.add(estate_agency)
+        estate_agency = self.__estate_agency_repository.add(estate_agency)
         return estate_agency
 
     def update(self, estate_agency_id: int, estate_agency_dict: dict) -> EstateAgency:
@@ -54,5 +54,5 @@ class EstateAgencyService(object):
     def find(self, estate_agency_id: int) -> EstateAgency:
         return self.__estate_agency_repository.get(estate_agency_id)
 
-    def list(self) -> List[Estate]:
+    def list(self) -> List[EstateAgency]:
         return self.__estate_agency_repository.list()

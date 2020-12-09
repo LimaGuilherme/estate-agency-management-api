@@ -9,6 +9,54 @@ from src.web_app import get_api
 api = get_api()
 
 
+class EstateAgencyResource(ResourceBase):
+
+    def __init__(self, estate_agency_service: EstateAgencyService):
+        super(EstateAgencyResource, self).__init__()
+        self.estate_agency_service = estate_agency_service
+
+    def get(self, estate_agency_id: int = None) -> tuple:
+        if estate_agency_id:
+            try:
+                estate_agency = self.estate_agency_service.find(estate_agency_id)
+                return serialize_estate_agency_to_json(estate_agency), 200
+            except exceptions.EstateAgencyNotFound:
+                return self.return_not_found('Estate Agency with ID: {} was not found.'.format(estate_agency_id))
+            except exceptions.UnexpectedError as ex:
+                return self.return_unexpected_error(ex)
+
+        estate_agencies = self.estate_agency_service.list()
+        response = [serialize_estate_agency_to_json(estate_agency) for estate_agency in estate_agencies]
+        return response, 200
+
+    def delete(self, estate_agency_id: int) -> tuple:
+        try:
+            self.estate_agency_service.delete(estate_agency_id)
+            return self.return_deleted()
+        except exceptions.EstateAgencyNotFound:
+            return self.return_not_found('Estate Agency with ID: {} was not found or already deleted'.format(estate_agency_id))
+        except exceptions.UnexpectedError as ex:
+            return self.return_unexpected_error(ex)
+
+    def post(self) -> tuple:
+        try:
+            data_to_create_estate_agency_dict = self._serialize_in(request.json)
+            estate_agency = self.estate_agency_service.create(data_to_create_estate_agency_dict)
+            return serialize_estate_agency_to_json(estate_agency), 200
+        except exceptions.UnexpectedError as ex:
+            return self.return_unexpected_error(ex)
+
+    def put(self, estate_agency_id: int) -> tuple:
+        try:
+            data_to_update_estate_agency_dict = self._serialize_in(request.json)
+            estate_agency = self.estate_agency_service.update(estate_agency_id, data_to_update_estate_agency_dict)
+            return serialize_estate_agency_to_json(estate_agency), 200
+        except exceptions.EstateAgencyNotFound:
+            return self.return_not_found('Estate Agency with ID: {} was not found.'.format(estate_agency_id))
+        except exceptions.UnexpectedError as ex:
+            return self.return_unexpected_error(ex)
+
+
 class EstateResource(ResourceBase):
 
     def __init__(self, estate_service: EstateService):
@@ -19,8 +67,7 @@ class EstateResource(ResourceBase):
         if estate_id:
             try:
                 estate = self.estate_service.find(estate_id)
-                estate_json = self.estate_dict_serializer.serialize(estate)
-                return self.response({'result': estate_json})
+                return serialize_estate_to_json(estate), 200
             except exceptions.EstateNotFound:
                 return self.return_not_found('Estate with ID: {} was not found.'.format(estate_id))
             except exceptions.UnexpectedError as ex:
@@ -28,7 +75,7 @@ class EstateResource(ResourceBase):
 
         estates = self.estate_service.list()
         response = [serialize_estate_to_json(estate) for estate in estates]
-        return self._serialize_out(response), 200
+        return response, 200
 
     def delete(self, estate_id: int) -> tuple:
         try:
@@ -66,57 +113,6 @@ class EstateResource(ResourceBase):
             return self.return_not_found('Estate with ID: {} was not found or already deleted'.format(estate_id))
         except exceptions.EstateAgencyNotFound:
             return self.return_not_found('Estate Agency with ID: {} was not found or already deleted'.format(self.payload['estate_agency_id']))
-        except exceptions.UnexpectedError as ex:
-            return self.return_unexpected_error(ex)
-
-
-class EstateAgencyResource(ResourceBase):
-
-    def __init__(self, estate_agency_service: EstateAgencyService):
-        super(EstateAgencyResource, self).__init__()
-        self.estate_agency_service = estate_agency_service
-
-    def get(self, estate_agency_id: int = None) -> tuple:
-        if estate_agency_id:
-            try:
-                estate_agency = self.estate_agency_service.find(estate_agency_id)
-                estate_json = serialize_estate_agency_to_json(estate_agency)
-                return self._serialize_out(estate_json), 200
-            except exceptions.EstateAgencyNotFound:
-                return self.return_not_found('Estate Agency with ID: {} was not found.'.format(estate_agency_id))
-            except exceptions.UnexpectedError as ex:
-                return self.return_unexpected_error(ex)
-
-        estate_agencies = self.estate_agency_service.list()
-        response = [serialize_estate_agency_to_json(estate_agency) for estate_agency in estate_agencies]
-        return self._serialize_out(response), 200
-
-    def delete(self, estate_agency_id: int) -> tuple:
-        try:
-            self.estate_agency_service.delete(estate_agency_id)
-            return self.return_deleted()
-        except exceptions.EstateAgencyNotFound:
-            return self.return_not_found('Estate Agency with ID: {} was not found or already deleted'.format(estate_agency_id))
-        except exceptions.UnexpectedError as ex:
-            return self.return_unexpected_error(ex)
-
-    def post(self) -> tuple:
-        try:
-            data_to_create_estate_agency = self._serialize_in(request.json)
-            estate = self.estate_agency_service.create(data_to_create_estate_agency)
-            estate_json = self.estate_agency_dict_serializer.serialize(estate)
-            return self.response(estate_json), 201
-        except exceptions.UnexpectedError as ex:
-            return self.return_unexpected_error(ex)
-
-    def put(self, estate_agency_id: int) -> tuple:
-        try:
-            data_to_update_estate_agency = self._serialize_in(request.json)
-            estate_agency = self.estate_agency_service.update(estate_agency_id, data_to_update_estate_agency)
-            estate_json = serialize_estate_agency_to_json(estate_agency)
-            return self.response(estate_json), 200
-        except exceptions.EstateAgencyNotFound:
-            return self.return_not_found('Estate Agency with ID: {} was not found.'.format(estate_agency_id))
         except exceptions.UnexpectedError as ex:
             return self.return_unexpected_error(ex)
 
