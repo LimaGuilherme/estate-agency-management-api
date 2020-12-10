@@ -10,8 +10,17 @@ services:
       MYSQL_ROOT_PASSWORD: 'password'
     ports:
       - 3306:3306
+    networks:
+      - estate-agency-network
     volumes:
       - ./data:/data/db
+
+  adminer:
+    image: adminer
+    ports:
+      - 7070:8080
+    networks:
+      - estate-agency-network
 
   estate-agency-api:
       build:

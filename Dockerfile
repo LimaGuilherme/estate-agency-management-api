@@ -10,4 +10,4 @@ COPY entrypoint.sh /code/entrypoint.sh
 
 RUN pip3 install -r requirements.txt
 
-CMD ["flask", "run"]
+ENTRYPOINT ["./entrypoint.sh"]

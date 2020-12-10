@@ -1,2 +1,4 @@
-python manage.py db migrate
+#!/bin/bash
+python manage.py db upgrade
+
 flask run

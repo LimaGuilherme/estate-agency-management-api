@@ -60,8 +60,6 @@ def run_migrations_online():
     # reference: http://alembic.readthedocs.org/en/latest/cookbook.html
     def process_revision_directives(context, revision, directives):
         if getattr(config.cmd_opts, 'autogenerate', False):
-            import ipdb
-            ipdb.set_trace()
             script = directives[0]
             if script.upgrade_ops.is_empty():
                 directives[:] = []
